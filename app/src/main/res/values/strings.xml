@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Heróis</string>
+    <string name="add_hero">Adicionar herói</string>
+    <string name="heroes">Heróis</string>
+    <string name="background">Plano de fundo</string>
+    <string name="hero_name">Nome do herói</string>
+    <string name="hero_power">Poder do herói</string>
+    <string name="save">Salvar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="delete">Deletar</string>
+    <string name="delete_hero">Deletar herói?</string>
+</resources>
