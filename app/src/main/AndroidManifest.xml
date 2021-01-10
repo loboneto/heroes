@@ -4,14 +4,16 @@
 
     <application
         android:name=".ui.Main"
-        android:allowBackup="true"
+        android:allowBackup="false"
+        android:fullBackupContent="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Heroes">
-        <activity android:name=".ui.heroes.HeroesActivity"/>
-        <activity android:name=".ui.launcher.LauncherActivity"
+        <activity android:name=".ui.heroes.HeroesActivity" />
+        <activity
+            android:name=".ui.launcher.LauncherActivity"
             android:theme="@style/Theme.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

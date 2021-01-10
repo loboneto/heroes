@@ -9,4 +9,6 @@
     <string name="cancel">Cancelar</string>
     <string name="delete">Deletar</string>
     <string name="delete_hero">Deletar herói?</string>
+    <string name="search">Pesquisar</string>
+    <string name="add">Adicionar</string>
 </resources>
