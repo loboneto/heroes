@@ -14,7 +14,6 @@
     <style name="Theme.Launcher" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowDisablePreview">true</item>
-<!--        <item name="android:textViewStyle">@style/CustomFont</item>-->
     </style>
 
     <style name="ThemeOverlay.Demo.BottomSheetDialog" parent="@style/ThemeOverlay.MaterialComponents.BottomSheetDialog">
