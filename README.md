@@ -1,4 +1,4 @@
-# heroes
+# HEROES
 
 - Aplicativo para cadastro de Heróis.
 
