@@ -1,24 +1,34 @@
 package br.com.loboneto.heroes.ui.heroes.fragments
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import br.com.loboneto.heroes.R
-import br.com.loboneto.heroes.data.domain.Hero
-import br.com.loboneto.heroes.data.dao.RoomState
+import br.com.loboneto.heroes.data.database.HeroEntity
 import br.com.loboneto.heroes.databinding.FragmentHeroesBinding
+import br.com.loboneto.heroes.domain.RequestState
 import br.com.loboneto.heroes.ui.heroes.HeroesAdapter
 import br.com.loboneto.heroes.ui.heroes.HeroesViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
-class HeroesFragment : Fragment(R.layout.fragment_heroes), SwipeRefreshLayout.OnRefreshListener, View.OnClickListener {
+@AndroidEntryPoint
+class HeroesFragment : Fragment(),
+    SwipeRefreshLayout.OnRefreshListener,
+    View.OnClickListener {
 
     private lateinit var binding: FragmentHeroesBinding
 
@@ -28,9 +38,7 @@ class HeroesFragment : Fragment(R.layout.fragment_heroes), SwipeRefreshLayout.On
         HeroesAdapter(this)
     }
 
-    private val viewModel: HeroesViewModel by lazy {
-        ViewModelProvider(requireActivity()).get(HeroesViewModel::class.java)
-    }
+    private val viewModel by viewModels<HeroesViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,10 +73,6 @@ class HeroesFragment : Fragment(R.layout.fragment_heroes), SwipeRefreshLayout.On
     private fun setListeners() {
         binding.fabAddHero.setOnClickListener(this)
         binding.recyclerViewHeroes.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-            }
-
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (!recyclerView.canScrollVertically(-1)) {
@@ -81,12 +85,12 @@ class HeroesFragment : Fragment(R.layout.fragment_heroes), SwipeRefreshLayout.On
     }
 
     private fun getHeroes() {
-        viewModel.get().observe(viewLifecycleOwner) { state ->
+        viewModel.getHeroes().observe(viewLifecycleOwner) { state ->
             when (state) {
-                is RoomState.Loading -> {
+                is RequestState.Loading -> {
                     showProgress()
                 }
-                is RoomState.Success -> {
+                is RequestState.Success -> {
                     hideProgress()
                     binding.swipeRefreshHeroes.isEnabled = false
                     adapter.setHeroes(state.data)
@@ -94,7 +98,7 @@ class HeroesFragment : Fragment(R.layout.fragment_heroes), SwipeRefreshLayout.On
                         showMessage("Nenhum herói salvo.")
                     }
                 }
-                is RoomState.Failure -> {
+                is RequestState.Failure -> {
                     hideProgress()
                     showMessage("Falha ao obter heróis, tente novamente.")
                 }
@@ -102,19 +106,19 @@ class HeroesFragment : Fragment(R.layout.fragment_heroes), SwipeRefreshLayout.On
         }
     }
 
-    fun deleteHero(hero: Hero) {
-        viewModel.delete(hero).observe(viewLifecycleOwner, { state ->
+    fun deleteHero(hero: HeroEntity) {
+        viewModel.deleteHero(hero).observe(viewLifecycleOwner) { state ->
             when (state) {
-                is RoomState.Loading -> { }
-                is RoomState.Success -> {
+                is RequestState.Loading -> { }
+                is RequestState.Success -> {
                     adapter.removeHero(hero)
                     showMessage("Herói removido com sucesso.")
                 }
-                is RoomState.Failure -> {
+                is RequestState.Failure -> {
                     showMessage("Falha ao remover herói, tente novamente.")
                 }
             }
-        })
+        }
     }
 
     private fun showProgress() {

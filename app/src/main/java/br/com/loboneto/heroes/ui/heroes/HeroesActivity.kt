@@ -2,8 +2,10 @@ package br.com.loboneto.heroes.ui.heroes
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import br.com.loboneto.heroes.R
@@ -13,30 +15,25 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class HeroesActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityHeroesBinding
+    private val binding: ActivityHeroesBinding by lazy {
+        ActivityHeroesBinding.inflate(layoutInflater)
+    }
 
-    private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var navController: NavController
+    private val appBarConfiguration: AppBarConfiguration by lazy {
+        AppBarConfiguration(setOf(R.id.navigation_heroes))
+    }
+
+    private val navHost by lazy {
+        supportFragmentManager.findFragmentById(R.id.nav_app_fragment) as NavHostFragment
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setBinding()
-        setNavigation()
-    }
-
-    private fun setBinding() {
-        binding = ActivityHeroesBinding.inflate(layoutInflater)
         setContentView(binding.root)
-    }
-
-    private fun setNavigation() {
-        appBarConfiguration = AppBarConfiguration(setOf(R.id.navigation_heroes))
-        navController = findNavController(R.id.nav_app_fragment)
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration)
-
+        NavigationUI.setupActionBarWithNavController(this, navHost.navController, appBarConfiguration)
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        return NavigationUI.navigateUp(navController, appBarConfiguration)
+        return NavigationUI.navigateUp(navHost.navController, appBarConfiguration)
     }
 }

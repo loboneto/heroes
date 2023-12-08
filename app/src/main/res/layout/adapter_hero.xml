@@ -5,7 +5,7 @@
 
         <variable
             name="hero"
-            type="br.com.loboneto.heroes.data.domain.Hero" />
+            type="br.com.loboneto.heroes.data.database.HeroEntity" />
     </data>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

@@ -5,12 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import br.com.loboneto.heroes.R
-import br.com.loboneto.heroes.data.domain.Hero
+import br.com.loboneto.heroes.data.database.HeroEntity
 import br.com.loboneto.heroes.databinding.BottomSheetDeleteHeroBinding
 import br.com.loboneto.heroes.ui.heroes.fragments.HeroesFragment
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class DeleteHeroBottomSheet(private val fragment: HeroesFragment, private val hero: Hero) :
+class DeleteHeroBottomSheet(private val fragment: HeroesFragment, private val hero: HeroEntity) :
     BottomSheetDialogFragment(), View.OnClickListener {
 
     private lateinit var binding: BottomSheetDeleteHeroBinding
@@ -40,9 +40,5 @@ class DeleteHeroBottomSheet(private val fragment: HeroesFragment, private val he
             R.id.buttonDelete -> deleteHero()
             R.id.buttonCancel -> dismiss()
         }
-    }
-
-    companion object {
-        const val TAG = "SignOutBottomSheet"
     }
 }

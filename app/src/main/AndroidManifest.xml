@@ -13,6 +13,7 @@
         android:theme="@style/Theme.Heroes">
         <activity android:name=".ui.heroes.HeroesActivity" />
         <activity
+            android:exported="true"
             android:name=".ui.launcher.LauncherActivity"
             android:theme="@style/Theme.Launcher">
             <intent-filter>

@@ -1,27 +1,32 @@
 package br.com.loboneto.heroes.ui.heroes
 
-import androidx.hilt.Assisted
-import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.*
-import br.com.loboneto.heroes.data.domain.Hero
-import br.com.loboneto.heroes.data.local.HeroesRepository
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.liveData
+import br.com.loboneto.heroes.data.database.HeroEntity
+import br.com.loboneto.heroes.domain.RequestState
+import br.com.loboneto.heroes.domain.usecase.AddHeroUseCase
+import br.com.loboneto.heroes.domain.usecase.DeleteHeroUseCase
+import br.com.loboneto.heroes.domain.usecase.GetHeroesUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class HeroesViewModel
-@ViewModelInject
-constructor(
-    private val heroesRepository: HeroesRepository,
-    @Assisted savedStateHandle: SavedStateHandle
+@HiltViewModel
+class HeroesViewModel @Inject constructor(
+    private val addHeroUseCase: AddHeroUseCase,
+    private val deleteHeroUseCase: DeleteHeroUseCase,
+    private val getHeroesUseCase: GetHeroesUseCase,
 ) : ViewModel() {
 
-    fun get() = liveData {
-        emitSource(heroesRepository.fetch().asLiveData())
+    fun getHeroes() = liveData<RequestState<List<HeroEntity>>> {
+        emitSource(getHeroesUseCase().asLiveData())
     }
 
-    fun save(hero: Hero) = liveData {
-        emitSource(heroesRepository.save(hero).asLiveData())
+    fun addHero(hero: HeroEntity) = liveData<RequestState<Unit>> {
+        emitSource(addHeroUseCase(hero).asLiveData())
     }
 
-    fun delete(hero: Hero) = liveData {
-        emitSource(heroesRepository.delete(hero).asLiveData())
+    fun deleteHero(hero: HeroEntity) = liveData<RequestState<Unit>> {
+        emitSource(deleteHeroUseCase(hero).asLiveData())
     }
 }

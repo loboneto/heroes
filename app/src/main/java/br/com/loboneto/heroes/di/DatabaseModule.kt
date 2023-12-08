@@ -6,19 +6,15 @@ import br.com.loboneto.heroes.data.database.HeroesDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
-@InstallIn(ApplicationComponent::class)
-object RoomModule {
-
+@InstallIn(SingletonComponent::class)
+object DatabaseModule {
     @Singleton
     @Provides
-    fun provideFavoriteDatabase(@ApplicationContext context: Context): HeroesDatabase {
-        return Room
-            .databaseBuilder(context, HeroesDatabase::class.java, "Heroes.db")
-            .build()
-    }
+    fun provideDatabase(@ApplicationContext context: Context): HeroesDatabase =
+        Room.databaseBuilder(context, HeroesDatabase::class.java, "Heroes.db").build()
 }

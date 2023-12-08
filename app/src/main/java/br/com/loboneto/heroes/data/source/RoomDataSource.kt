@@ -1,43 +1,30 @@
 package br.com.loboneto.heroes.data.source
 
-import br.com.loboneto.heroes.data.dao.RoomState
+import br.com.loboneto.heroes.di.CoroutinesModule
+import br.com.loboneto.heroes.data.database.HeroEntity
 import br.com.loboneto.heroes.data.database.HeroesDatabase
-import br.com.loboneto.heroes.data.domain.Hero
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class RoomDataSource(private val database: HeroesDatabase) {
+interface RoomDataSource {
+    suspend fun save(hero: HeroEntity)
+    suspend fun delete(hero: HeroEntity)
+    suspend fun fetch(): List<HeroEntity>
+}
 
-    fun save(hero: Hero) = flow {
-        emit(RoomState.Loading)
-        try {
-            database.heroDao().save(hero)
-            emit(RoomState.Success(Unit))
-        } catch (e: Exception) {
-            emit(RoomState.Failure(e))
-        }
-    }.flowOn(Dispatchers.IO)
+class RoomDataSourceImpl @Inject constructor(
+    private val database: HeroesDatabase,
+    @CoroutinesModule.DispatcherIO private val dispatcher: CoroutineDispatcher
+) : RoomDataSource {
+    override suspend fun save(hero: HeroEntity) = withContext(dispatcher) {
+        database.heroDao().save(hero)
+    }
 
-    fun delete(hero: Hero) = flow {
-        emit(RoomState.Loading)
-        try {
-            database.heroDao().delete(hero)
-            emit(RoomState.Success(Unit))
-        } catch (e: Exception) {
-            e.printStackTrace()
-            emit(RoomState.Failure(e))
-        }
-    }.flowOn(Dispatchers.IO)
-
-    fun fetch() = flow {
-        emit(RoomState.Loading)
-        try {
-            val heroes: List<Hero> = database.heroDao().get()
-            emit(RoomState.Success(heroes))
-        } catch (e: Exception) {
-            e.printStackTrace()
-            emit(RoomState.Failure(e))
-        }
-    }.flowOn(Dispatchers.IO)
+    override suspend fun delete(hero: HeroEntity) = withContext(dispatcher) {
+        database.heroDao().delete(hero)
+    }
+    override suspend fun fetch(): List<HeroEntity> = withContext(dispatcher) {
+        return@withContext database.heroDao().get()
+    }
 }
